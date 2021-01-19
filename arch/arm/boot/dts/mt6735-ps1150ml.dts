@@ -1,0 +1,40 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+* Author: Maxim Kutnij <gtk3@inbox.ru>
+*/
+
+/dts-v1/;
+#include "mt6735.dtsi"
+
+/ {
+	model = "MediaTek MT6735 Digma Plane 1538E 4G";
+	compatible = "mediatek,mt6735-ps1150ml", "mediatek,mt6735";
+
+aliases {
+		bootargs = "console=tty0 console=ttyS0,115200n8 lcm=1-s960_wuxga_boe_fhd earlyprintk ignore_loglevel androidboot.hardware=mt6735";
+		serial0 = &uart0;
+	};
+
+
+
+	chosen {
+		stdout-path = "serial0:921600n8";	
+	};
+
+
+	memory {
+		device_type = "memory";
+		reg = <0 0x40000000 0 0x80000000>;
+	};
+
+};
+
+&uart0 {
+	status = "okay";
+};
+/*
+&uart1 {
+	status = "okay";
+};*/
+
+

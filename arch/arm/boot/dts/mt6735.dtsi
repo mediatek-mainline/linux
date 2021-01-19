@@ -1,0 +1,223 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *Author: Maxim Kutnij <gtk3@inbox.ru>
+ */
+
+#include <dt-bindings/clock/mt6735-clk.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+#include "mt6735-pinfunc.h"
+#include <dt-bindings/mfd/mt67xx-msdc.h>
+
+
+/ {
+	compatible = "mediatek,mt6735";
+	interrupt-parent = <&sysirq>;
+	#address-cells = <2>;
+	#size-cells = <2>;
+
+	psci {
+		compatible = "arm,psci";
+		method = "smc";
+		cpu_suspend = <0x84000001>;
+		cpu_off = <0x84000002>;
+		cpu_on = <0x84000003>;
+		affinity_info = <0x84000004>;
+	}; // I doubt that he is needed yet
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		enable-method = "spin-table";
+		
+		cpu0: cpu@0 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a53";
+			reg = <0x000>;
+		};
+
+		cpu1: cpu@1 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a53";
+			reg = <0x001>;
+		};
+
+		cpu2: cpu@2 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a53";
+			reg = <0x002>;
+		};
+
+		cpu3: cpu@3 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a53";
+			reg = <0x003>;
+		};
+
+	};
+
+	/*infrasys: infracfg_ao@10001000 {
+		compatible = "mediatek,mt6735-infracfg", "syscon";
+		reg = <0 0x10000000 0 0x1000>;
+		#clock-cells = <1>;
+	}; 
+
+	topckgen: topckgen@10210000 {
+			compatible = "mediatek,mt6735-topckgen";
+			reg = <0x10210000 0x1000>;
+			#clock-cells = <1>;
+	};	*/ // Not tested
+	
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		atf-reserved-memory@43000000 {
+			compatible = "mediatek,mt6735-atf-reserved-memory",
+				     "mediatek,mt6735m-atf-reserved-memory",
+				     "mediatek,mt6753-atf-reserved-memory";
+			no-map;
+			reg = <0 0x43000000 0 0x30000>;
+		};
+
+		ram_console-reserved-memory@43f00000 {
+			compatible = "mediatek,ram_console";
+			reg = <0x00 0x43f00000 0x00 0x10000>;
+		};
+
+		pstore-reserved-memory@43f10000 {
+			compatible = "mediatek,pstore";
+			reg = <0x00 0x43f10000 0x00 0xe0000>;
+		};
+
+		minirdump-reserved-memory@43ff0000 {
+			compatible = "mediatek,minirdump";
+			reg = <0x00 0x43ff0000 0x00 0x10000>;
+		};
+
+		reserve-memory-ccci_md1 {
+			compatible = "mediatek,reserve-memory-ccci_md1";
+			no-map;
+			size = <0x00 0x3810000>;
+			alignment = <0x00 0x2000000>;
+			alloc-ranges = <0x00 0x40000000 0x00 0xc0000000>;
+		};
+
+		consys-reserve-memory {
+			compatible = "mediatek,consys-reserve-memory";
+			no-map;
+			size = <0x00 0x100000>;
+			alignment = <0x00 0x200000>;
+		};
+	};
+
+
+
+	
+	uart_clk: dummy26m {
+		compatible = "fixed-clock";
+		clock-frequency = <26000000>;
+		#clock-cells = <0>;
+	};
+
+	rtc_clk: dummy32k {
+			compatible = "fixed-clock";
+			#clock-cells = <0x00>;
+			clock-frequency = <32000>;
+	};
+
+
+	timer {
+		compatible = "arm,armv8-timer";
+		interrupt-parent = <&gic>;
+		interrupts = <GIC_PPI 13
+			     (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
+			     <GIC_PPI 14
+			     (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
+			     <GIC_PPI 11
+			     (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
+			     <GIC_PPI 10
+			     (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>;
+		//interrupts = <0x01 0x0d 0x08 0x01 0x0e 0x08 0x01 0x0b 0x08 0x01 0x0a 0x08>;
+		//clocks = <&system_clk>, <&rtc_clk>;
+		//clock-frequency = <0xc65d40>;
+	};
+
+	sysirq: intpol-controller@10204000 {
+		compatible = "mediatek,mt6735-sysirq",
+			     "mediatek,mt6577-sysirq";
+		interrupt-controller;
+		#interrupt-cells = <3>;
+		interrupt-parent = <&gic>;
+		reg = <0 0x10200620 0 0x20>;
+	};
+
+	gic: interrupt-controller@jx10221000 {
+		compatible = "arm,gic-400";
+		#interrupt-cells = <3>;
+		interrupt-parent = <&gic>;
+		interrupt-controller;
+		//arm,routable-irqs = <160>;
+		reg = <0 0x10221000 0 0x1000>,
+		      <0 0x10222000 0 0x1000>;
+		      //<0 0x10200620 0 0x1000>;
+	};
+
+	/*gic-cpuif@0 {
+			compatible = "arm,gic-cpuif";
+			cpuif-id = <0>;
+			cpu = <&cpu0>;
+		};
+
+		gic-cpuif@1 {
+			compatible = "arm,gic-cpuif";
+			cpuif-id = <1>;
+			cpu = <&cpu1>;
+		};
+
+		gic-cpuif@2 {
+			compatible = "arm,gic-cpuif";
+			cpuif-id = <2>;
+			cpu = <&cpu2>;
+		};
+
+		gic-cpuif@3 {
+			compatible = "arm,gic-cpuif";
+			cpuif-id = <3>;
+			cpu = <&cpu3>;
+		};*/ //Not influenced yet
+
+		
+	/*watchdog: watchdog@xxx {
+		compatible = "mediatek,mt6735-wdt", "mediatek,mt6589-wdt";
+		reg = <0 0x10212000 0 0x100>;
+		timeout-sec = <100>;
+	}; */ //Device restarts anyway
+
+	
+	uart0: serial@11002000 {
+		compatible = "mediatek,mt6735-uart",
+			     "mediatek,mt6577-uart";
+		reg = <0x11002000 0x1000>, // UART base
+		<0x11000380 0x1000>, // DMA Tx base
+		<0x11000400 0x80>; // DMA Rx base
+		interrupts = <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>, // UART IRQ
+		<GIC_SPI 103 IRQ_TYPE_LEVEL_LOW>, // DMA Tx IRQ
+		<GIC_SPI 104 IRQ_TYPE_LEVEL_LOW>; // DMA Rx IRQ
+		clocks = <&uart_clk>;
+		clock-names = "baud", "bus";
+		status = "disabled";
+	}; // mt6577-uart: probe of 1100200000001000.serial failed with error -2
+
+	/*uart1: serial@11003000 {
+		compatible = "mediatek,mt6755-uart",
+			     "mediatek,mt6577-uart";
+		reg = <0x11003000 0x400>;
+		interrupts = <GIC_SPI 92 IRQ_TYPE_LEVEL_LOW>;
+		clocks = <&uart_clk>;
+		status = "disabled";
+	};*/ 
+
+
+};
