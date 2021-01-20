@@ -1386,6 +1386,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += \
 	mt6589-aquaris5.dtb \
 	mt6592-evb.dtb \
 	mt6735-ps1150ml.dtb \
+	mt6735-t84bi4g.dtb \
 	mt7623a-rfb-emmc.dtb \
 	mt7623a-rfb-nand.dtb \
 	mt7623n-rfb-emmc.dtb \

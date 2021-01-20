@@ -1,0 +1,54 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+* Author: Maxim Kutnij <gtk3@inbox.ru>
+*/
+
+/dts-v1/;
+#include "mt6735.dtsi"
+
+/ {
+	model = "MediaTek MT6735 Oysters T84Bi 4G";
+	compatible = "mediatek,mt6735-t84bi4g", "mediatek,mt6735";
+
+aliases {
+		bootargs = "console=tty0 console=ttyS0,115200n8 earlyprintk ignore_loglevel androidboot.hardware=mt6735";
+		serial0 = &uart0;
+	};
+
+chosen {
+		stdout-path = "serial0:921600n8";
+		};
+
+	chosen {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		//stdout-path = "serial0:921600n8";
+		ranges;
+		framebuffer0: framebuffer {
+        compatible = "simple-framebuffer";
+        reg = <0x7f110000 (800 * 1280 * 4)>;
+        width = <800>;
+        height = <1280>;
+        stride = <(800 * 4)>;
+        format = "r8g8b8";
+		status = "okay";
+		};
+	};
+
+
+	memory {
+		device_type = "memory";
+		reg = <0 0x40000000 0 0x80000000>;
+	};
+
+};
+
+&uart0 {
+	status = "okay";
+};
+/*
+&uart1 {
+	status = "okay";
+};*/
+
+
