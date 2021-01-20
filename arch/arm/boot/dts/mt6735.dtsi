@@ -189,11 +189,11 @@
 		};*/ //Not influenced yet
 
 		
-	/*watchdog: watchdog@xxx {
+	watchdog: watchdog@xxx {
 		compatible = "mediatek,mt6735-wdt", "mediatek,mt6589-wdt";
 		reg = <0 0x10212000 0 0x100>;
 		timeout-sec = <100>;
-	}; */ //Device restarts anyway
+	};  //Device restarts anyway
 
 	
 	uart0: serial@11002000 {
