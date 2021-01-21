@@ -16,41 +16,52 @@
 	#address-cells = <2>;
 	#size-cells = <2>;
 
-	psci {
+	/*psci {
 		compatible = "arm,psci";
 		method = "smc";
 		cpu_suspend = <0x84000001>;
 		cpu_off = <0x84000002>;
 		cpu_on = <0x84000003>;
 		affinity_info = <0x84000004>;
-	}; // I doubt that he is needed yet
+	};*/ // smp: Bringing up secondary CPUs ... and reboot
 
 	cpus {
 		#address-cells = <1>;
 		#size-cells = <0>;
-		enable-method = "spin-table";
 		
 		cpu0: cpu@0 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53";
+			enable-method = "spin-table";
+			cpu-release-addr = <0x0 0x40000200>;
+			clock-frequency = <1000000000>; // 1300000000 Temporarily for safety
 			reg = <0x000>;
 		};
 
 		cpu1: cpu@1 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53";
+			enable-method = "spin-table";
+			cpu-release-addr = <0x0 0x40000200>;
+			clock-frequency = <1000000000>;
 			reg = <0x001>;
 		};
 
 		cpu2: cpu@2 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53";
+			enable-method = "spin-table";
+			cpu-release-addr = <0x0 0x40000200>;
+			clock-frequency = <1000000000>;
 			reg = <0x002>;
 		};
 
 		cpu3: cpu@3 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53";
+			enable-method = "spin-table";
+			cpu-release-addr = <0x0 0x40000200>;
+			clock-frequency = <1000000000>;
 			reg = <0x003>;
 		};
 
@@ -68,17 +79,22 @@
 					     <&cpu3>;
 		};
 
-	/*infrasys: infracfg_ao@10001000 {
+		pericfg@10002000 {
+			compatible = "mediatek,pericfg", "syscon";
+			reg = <0x10002000 0x1000>;
+		};
+
+	infrasys: infracfg_ao@10001000 {
 		compatible = "mediatek,mt6735-infracfg", "syscon";
 		reg = <0 0x10000000 0 0x1000>;
 		#clock-cells = <1>;
-	}; 
+	}; // Not tested
 
 	topckgen: topckgen@10210000 {
-			compatible = "mediatek,mt6735-topckgen";
+			compatible = "mediatek,mt6735-topckgen", "syscon";
 			reg = <0x10210000 0x1000>;
 			#clock-cells = <1>;
-	};	*/ // Not tested
+	};	 // Not tested
 	
 	reserved-memory {
 		#address-cells = <2>;
@@ -153,7 +169,7 @@
 			     (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>;
 		//interrupts = <0x01 0x0d 0x08 0x01 0x0e 0x08 0x01 0x0b 0x08 0x01 0x0a 0x08>;
 		//clocks = <&system_clk>, <&rtc_clk>;
-		//clock-frequency = <0xc65d40>;
+		clock-frequency = <13000000>;
 	};
 
 	sysirq: intpol-controller@10204000 {
@@ -172,7 +188,7 @@
 		interrupt-controller;
 		//arm,routable-irqs = <160>;
 		reg = <0 0x10221000 0 0x1000>,
-		      <0 0x10222000 0 0x1000>;
+		      <0 0x10222000 0 0x2000>;
 		      //<0 0x10200620 0 0x1000>;
 	};
 
