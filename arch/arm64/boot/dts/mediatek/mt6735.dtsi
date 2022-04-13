@@ -7,6 +7,8 @@
 
 #include <dt-bindings/interrupt-controller/irq.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/clock/mediatek,mt6735-pericfg.h>
+#include <dt-bindings/clock/mediatek,mt6735-topckgen.h>
 
 / {
 	compatible = "mediatek,mt6735";
@@ -125,6 +127,20 @@
 		compatible = "simple-bus";
 		ranges;
 
+		infracfg: clock-controller@10000000 {
+			compatible = "mediatek,mt6735-infracfg", "syscon";
+			reg = <0 0x10000000 0 0x1000>;
+			#clock-cells = <1>;
+			#reset-cells = <1>;
+		};
+
+		pericfg: clock-controller@10002000 {
+			compatible = "mediatek,mt6735-pericfg", "syscon";
+			reg = <0 0x10002000 0 0x1000>;
+			#clock-cells = <1>;
+			#reset-cells = <1>;
+		};
+
 		gpt: timer@10004000 {
 			compatible = "mediatek,mt6735-timer",
 				     "mediatek,mt6577-timer";
@@ -150,6 +166,18 @@
 			clocks = <&system_clk>;
 		};
 
+		apmixedsys: clock-controller@10209000 {
+			compatible = "mediatek,mt6735-apmixedsys", "syscon";
+			reg = <0 0x10209000 0 0x1000>;
+			#clock-cells = <1>;
+		};
+
+		topckgen: clock-controller@10210000 {
+			compatible = "mediatek,mt6735-topckgen", "syscon";
+			reg = <0 0x10210000 0 0x1000>;
+			#clock-cells = <1>;
+		};
+
 		gic: interrupt-controller@10220000 {
 			compatible = "arm,gic-400";
 			reg = <0 0x10221000 0 0x1000>,
@@ -165,7 +193,8 @@
 			compatible = "mediatek,mt6735-uart", "mediatek,mt6577-uart";
 			reg = <0 0x11002000 0 0x1000>;
 			interrupts = <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>;
-			clocks = <&clk26m>;
+			clocks = <&topckgen UART_SEL>, <&pericfg UART0>;
+			clock-names = "baud", "bus";
 
 			status = "disabled";
 		};
@@ -174,7 +203,8 @@
 			compatible = "mediatek,mt6735-uart", "mediatek,mt6577-uart";
 			reg = <0 0x11003000 0 0x1000>;
 			interrupts = <GIC_SPI 92 IRQ_TYPE_LEVEL_LOW>;
-			clocks = <&clk26m>;
+			clocks = <&topckgen UART_SEL>, <&pericfg UART1>;
+			clock-names = "baud", "bus";
 
 			status = "disabled";
 		};
@@ -183,7 +213,8 @@
 			compatible = "mediatek,mt6735-uart", "mediatek,mt6577-uart";
 			reg = <0 0x11004000 0 0x1000>;
 			interrupts = <GIC_SPI 93 IRQ_TYPE_LEVEL_LOW>;
-			clocks = <&clk26m>;
+			clocks = <&topckgen UART_SEL>, <&pericfg UART2>;
+			clock-names = "baud", "bus";
 
 			status = "disabled";
 		};
@@ -192,7 +223,8 @@
 			compatible = "mediatek,mt6735-uart", "mediatek,mt6577-uart";
 			reg = <0 0x11005000 0 0x1000>;
 			interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_LOW>;
-			clocks = <&clk26m>;
+			clocks = <&topckgen UART_SEL>, <&pericfg UART3>;
+			clock-names = "baud", "bus";
 
 			status = "disabled";
 		};
