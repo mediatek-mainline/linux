@@ -178,6 +178,34 @@
 			#clock-cells = <1>;
 		};
 
+		pio: pin-controller@10211000 {
+			compatible = "mediatek,mt6735-pinctrl";
+			reg = <0 0x10211000 0 0x800>,
+			      <0 0x10211800 0 0x100>,
+			      <0 0x10211900 0 0x100>,
+			      <0 0x10211a00 0 0x100>,
+			      <0 0x10211b00 0 0x100>,
+			      <0 0x10211c00 0 0x100>,
+			      <0 0x10211d00 0 0x100>,
+			      <0 0x10005000 0 0x1000>;
+			reg-names = "gpio",
+				    "iocfg0",
+				    "iocfg1",
+				    "iocfg2",
+				    "iocfg3",
+				    "iocfg4",
+				    "iocfg5",
+				    "eint";
+			interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_HIGH>;
+
+			gpio-controller;
+			#gpio-cells = <2>;
+			gpio-ranges = <&pio 0 0 203>;
+
+			interrupt-controller;
+			#interrupt-cells = <2>;
+		};
+
 		gic: interrupt-controller@10220000 {
 			compatible = "arm,gic-400";
 			reg = <0 0x10221000 0 0x1000>,
