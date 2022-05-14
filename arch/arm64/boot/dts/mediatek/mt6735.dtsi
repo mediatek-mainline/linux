@@ -9,6 +9,8 @@
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 #include <dt-bindings/clock/mediatek,mt6735-pericfg.h>
 #include <dt-bindings/clock/mediatek,mt6735-topckgen.h>
+#include <dt-bindings/phy/phy.h>
+
 
 / {
 	compatible = "mediatek,mt6735";
@@ -255,6 +257,59 @@
 			clock-names = "baud", "bus";
 
 			status = "disabled";
+		};
+
+		usb2: usb@11200000 {
+			compatible = "mediatek,mt6735-musb", "mediatek,mtk-musb";
+			reg = <0 0x11200000 0 0x1000>;
+			interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_LOW>;
+			interrupt-names = "mc";
+			clocks = <&pericfg USB0>,
+				 <&system_clk>,
+				 <&topckgen UNIVPLL_D26>;
+			clock-names = "main", "mcu", "univpll";
+
+			phys = <&usb2port0 PHY_TYPE_USB2>;
+
+			status = "disabled";
+		};
+
+		usb2phy: phy@11210000 {
+			compatible = "mediatek,mt6735-tphy", "mediatek,generic-tphy-v1";
+			reg = <0 0x11210000 0 0x800>;
+			#address-cells = <2>;
+			#size-cells = <2>;
+			ranges;
+
+			status = "disabled";
+
+			usb2port0: usb-phy@11210800 {
+				reg = <0 0x11210800 0 0x100>;
+				clocks = <&pericfg USB0>;
+				clock-names = "ref";
+				#phy-cells = <1>;
+			};
+
+			usb2port1: usb-phy@11210900 {
+				reg = <0 0x11210900 0 0x100>;
+				clocks = <&pericfg USB0>;
+				clock-names = "ref";
+				#phy-cells = <1>;
+			};
+
+			usb2port2: usb-phy@11210a00 {
+				reg = <0 0x11210a00 0 0x100>;
+				clocks = <&pericfg USB0>;
+				clock-names = "ref";
+				#phy-cells = <1>;
+			};
+
+			usb2port3: usb-phy@11210b00 {
+				reg = <0 0x11210b00 0 0x100>;
+				clocks = <&pericfg USB0>;
+				clock-names = "ref";
+				#phy-cells = <1>;
+			};
 		};
 	};
 };
