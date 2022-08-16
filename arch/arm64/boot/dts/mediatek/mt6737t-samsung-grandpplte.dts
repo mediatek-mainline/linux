@@ -64,3 +64,16 @@
 &uart0 {
 	status = "okay";
 };
+
+&usb2 {
+	status = "okay";
+
+	usb_con: connector {
+		compatible = "usb-b-connector";
+		type = "micro";
+	};
+};
+
+&usb2phy {
+	status = "okay";
+};
