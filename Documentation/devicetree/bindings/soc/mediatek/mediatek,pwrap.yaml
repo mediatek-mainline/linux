@@ -1,0 +1,152 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/soc/mediatek/mediatek,pwrap.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: MediaTek PMIC Wrapper
+
+maintainers:
+  - Flora Fu <flora.fu@mediatek.com>
+
+description: |
+  On MediaTek SoCs the PMIC is connected via SPI. The SPI master interface
+  is not directly visible to the CPU, but only through the PMIC wrapper
+  inside the SoC. The communication between the SoC and the PMIC can
+  optionally be encrypted. Also a non standard Dual IO SPI mode can be
+  used to increase speed.
+
+  on MT8135 the pins of some SoC internal peripherals can be on the PMIC.
+  The signals of these pins are routed over the SPI bus using the pwrap
+  bridge.
+
+properties:
+  compatible:
+    oneOf:
+      - enum:
+        - mediatek,mt2701-pwrap
+        - mediatek,mt6765-pwrap
+        - mediatek,mt6779-pwrap
+        - mediatek,mt6797-pwrap
+        - mediatek,mt6873-pwrap
+        - mediatek,mt7622-pwrap
+        - mediatek,mt8135-pwrap
+        - mediatek,mt8173-pwrap
+        - mediatek,mt8183-pwrap
+        - mediatek,mt8186-pwrap
+        - mediatek,mt8195-pwrap
+        - mediatek,mt8516-pwrap
+      - items:
+        - const: mediatek,mt7623-pwrap
+        - const: mediatek,mt2701-pwrap
+      - items:
+        - const: mediatek,mt8188-pwrap
+        - const: mediatek,mt8195-pwrap
+
+  reg:
+    maxItems: 1
+
+  reg-names:
+    const: pwrap
+
+  interrupts:
+    maxItems: 1
+
+  clocks:
+    items:
+      - description: SPI bus clock
+      - description: Main module clock
+
+  clock-names:
+    items:
+      - const: spi
+      - const: wrap
+
+  resets:
+    maxItems: 1
+
+  reset-names:
+    const: pwrap
+
+  pmic:
+    type: object
+
+    description: PMIC subnode
+
+required:
+  - compatible
+  - reg
+  - reg-names
+  - interrupts
+  - clocks
+  - clock-names
+
+allOf:
+  - if:
+      properties:
+        compatible:
+          contains:
+            enum:
+              - mediatek,mt2701-pwrap
+              - mediatek,mt6765-pwrap
+              - mediatek,mt6797-pwrap
+              - mediatek,mt7622-pwrap
+              - mediatek,mt8135-pwrap
+              - mediatek,mt8173-pwrap
+    then:
+      required:
+        - resets
+        - reset-names
+    else:
+      properties:
+        resets: false
+        reset-names: false
+  - if:
+      properties:
+        compatible:
+          contains:
+            const: mediatek,mt8135-pwrap
+    then:
+      properties:
+        reg:
+          minItems: 2
+          maxItems: 2
+
+        reg-names:
+          items:
+            - const: pwrap
+            - const: pwrap-bridge
+
+        resets:
+          minItems: 2
+          maxItems: 2
+
+        reset-names:
+          items:
+            - const: pwrap
+            - const: pwrap-bridge
+
+additionalProperties: false
+
+examples:
+  - |
+    #include <dt-bindings/interrupt-controller/arm-gic.h>
+    #include <dt-bindings/interrupt-controller/irq.h>
+    #include <dt-bindings/reset/mt8135-resets.h>
+
+    pwrap: pwrap@1000f000 {
+        compatible = "mediatek,mt8135-pwrap";
+        reg = <0 0x1000f000 0 0x1000>,
+              <0 0x11017000 0 0x1000>;
+        reg-names = "pwrap", "pwrap-bridge";
+        interrupts = <GIC_SPI 128 IRQ_TYPE_LEVEL_HIGH>;
+        resets = <&infracfg MT8135_INFRA_PMIC_WRAP_RST>,
+                 <&pericfg MT8135_PERI_PWRAP_BRIDGE_SW_RST>;
+        reset-names = "pwrap", "pwrap-bridge";
+        clocks = <&clk26m>, <&clk26m>;
+        clock-names = "spi", "wrap";
+
+        pmic {
+            compatible = "mediatek,mt6397";
+        };
+    };
