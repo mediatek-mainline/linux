@@ -7,10 +7,11 @@
 
 #include <dt-bindings/interrupt-controller/irq.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/clock/mediatek,mt6735-infracfg.h>
 #include <dt-bindings/clock/mediatek,mt6735-pericfg.h>
 #include <dt-bindings/clock/mediatek,mt6735-topckgen.h>
 #include <dt-bindings/phy/phy.h>
-
+#include <dt-bindings/reset/mediatek,mt6735-infracfg.h>
 
 / {
 	compatible = "mediatek,mt6735";
@@ -134,6 +135,19 @@
 			reg = <0 0x10000000 0 0x1000>;
 			#clock-cells = <1>;
 			#reset-cells = <1>;
+		};
+
+		pwrap: pwrap@10001000 {
+			compatible = "mediatek,mt6735-pwrap";
+			reg = <0 0x10001000 0 0x250>;
+			reg-names = "pwrap";
+			interrupts = <GIC_SPI 163 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&infracfg PMIC_SPI>, <&infracfg PMIC_WRAP>;
+			clock-names = "spi", "wrap";
+			resets = <&infracfg PMIC_WRAP_RST>;
+			reset-names = "pwrap";
+
+			status = "disabled";
 		};
 
 		pericfg: clock-controller@10002000 {
