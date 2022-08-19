@@ -1,0 +1,34 @@
+// SPDX-License-Identifier: BSD-3-Clause
+/*
+ * Copyright (c) 2022, Yassine Oudjana <y.oudjana@protonmail.com>
+ */
+
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+
+&pwrap {
+	mt6328: pmic {
+		compatible = "mediatek,mt6328";
+
+		interrupt-parent = <&pio>;
+		interrupts = <206 IRQ_TYPE_LEVEL_HIGH>;
+		interrupt-controller;
+		#interrupt-cells = <2>;
+
+		mt6328_keys: keys {
+			compatible = "mediatek,mt6328-keys";
+			mediatek,long-press-mode = <1>;
+
+			status = "disabled";
+
+			mt6328_power: power {
+				linux,keycodes = <KEY_POWER>;
+				wakeup-source;
+			};
+
+			mt6328_home: home {
+				linux,keycodes = <KEY_HOME>;
+			};
+		};
+	};
+};
