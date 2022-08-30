@@ -11,7 +11,9 @@
 #include <dt-bindings/clock/mediatek,mt6735-pericfg.h>
 #include <dt-bindings/clock/mediatek,mt6735-topckgen.h>
 #include <dt-bindings/phy/phy.h>
+#include <dt-bindings/pinctrl/mediatek,mt6735-pinctrl.h>
 #include <dt-bindings/reset/mediatek,mt6735-infracfg.h>
+#include <dt-bindings/reset/mediatek,mt6735-pericfg.h>
 
 / {
 	compatible = "mediatek,mt6735";
@@ -220,6 +222,90 @@
 
 			interrupt-controller;
 			#interrupt-cells = <2>;
+
+			mmc0_pins_default: mmc0-default-pins {
+				pins-cmd-clk-dat-rst {
+					pinmux = <PINMUX_GPIO172__FUNC_MSDC0_CMD>,
+						 <PINMUX_GPIO173__FUNC_MSDC0_DSL>,
+						 <PINMUX_GPIO174__FUNC_MSDC0_CLK>,
+						 <PINMUX_GPIO175__FUNC_MSDC0_DAT0>,
+						 <PINMUX_GPIO176__FUNC_MSDC0_DAT1>,
+						 <PINMUX_GPIO177__FUNC_MSDC0_DAT2>,
+						 <PINMUX_GPIO178__FUNC_MSDC0_DAT3>,
+						 <PINMUX_GPIO179__FUNC_MSDC0_DAT4>,
+						 <PINMUX_GPIO180__FUNC_MSDC0_DAT5>,
+						 <PINMUX_GPIO181__FUNC_MSDC0_DAT6>,
+						 <PINMUX_GPIO182__FUNC_MSDC0_DAT7>,
+						 <PINMUX_GPIO183__FUNC_MSDC0_RSTB>;
+					drive-strength = <2>;
+				};
+			};
+
+			mmc0_pins_uhs: mmc0-uhs-pins {
+				pins-cmd-clk-dat-rst {
+					pinmux = <PINMUX_GPIO172__FUNC_MSDC0_CMD>,
+						 <PINMUX_GPIO173__FUNC_MSDC0_DSL>,
+						 <PINMUX_GPIO174__FUNC_MSDC0_CLK>,
+						 <PINMUX_GPIO175__FUNC_MSDC0_DAT0>,
+						 <PINMUX_GPIO176__FUNC_MSDC0_DAT1>,
+						 <PINMUX_GPIO177__FUNC_MSDC0_DAT2>,
+						 <PINMUX_GPIO178__FUNC_MSDC0_DAT3>,
+						 <PINMUX_GPIO179__FUNC_MSDC0_DAT4>,
+						 <PINMUX_GPIO180__FUNC_MSDC0_DAT5>,
+						 <PINMUX_GPIO181__FUNC_MSDC0_DAT6>,
+						 <PINMUX_GPIO182__FUNC_MSDC0_DAT7>,
+						 <PINMUX_GPIO183__FUNC_MSDC0_RSTB>;
+					drive-strength = <4>;
+				};
+			};
+
+			mmc1_pins_default: mmc1-default-pins {
+				pins-cmd-clk-dat {
+					pinmux = <PINMUX_GPIO166__FUNC_MSDC1_CMD>,
+						 <PINMUX_GPIO167__FUNC_MSDC1_CLK>,
+						 <PINMUX_GPIO168__FUNC_MSDC1_DAT0>,
+						 <PINMUX_GPIO169__FUNC_MSDC1_DAT1>,
+						 <PINMUX_GPIO170__FUNC_MSDC1_DAT2>,
+						 <PINMUX_GPIO171__FUNC_MSDC1_DAT3>;
+					drive-strength = <2>;
+				};
+			};
+
+			mmc1_pins_uhs: mmc1-uhs-pins {
+				pins-cmd-clk-dat {
+					pinmux = <PINMUX_GPIO166__FUNC_MSDC1_CMD>,
+						 <PINMUX_GPIO167__FUNC_MSDC1_CLK>,
+						 <PINMUX_GPIO168__FUNC_MSDC1_DAT0>,
+						 <PINMUX_GPIO169__FUNC_MSDC1_DAT1>,
+						 <PINMUX_GPIO170__FUNC_MSDC1_DAT2>,
+						 <PINMUX_GPIO171__FUNC_MSDC1_DAT3>;
+					drive-strength = <4>;
+				};
+			};
+
+			mmc2_pins_default: mmc2-default-pins {
+				pins-cmd-clk-dat {
+					pinmux = <PINMUX_GPIO198__FUNC_MSDC2_CMD>,
+						 <PINMUX_GPIO199__FUNC_MSDC2_CLK>,
+						 <PINMUX_GPIO200__FUNC_MSDC2_DAT0>,
+						 <PINMUX_GPIO201__FUNC_MSDC2_DAT1>,
+						 <PINMUX_GPIO202__FUNC_MSDC2_DAT2>,
+						 <PINMUX_GPIO203__FUNC_MSDC2_DAT3>;
+					drive-strength = <2>;
+				};
+			};
+
+			mmc2_pins_uhs: mmc2-uhs-pins {
+				pins-cmd-clk-dat {
+					pinmux = <PINMUX_GPIO198__FUNC_MSDC2_CMD>,
+						 <PINMUX_GPIO199__FUNC_MSDC2_CLK>,
+						 <PINMUX_GPIO200__FUNC_MSDC2_DAT0>,
+						 <PINMUX_GPIO201__FUNC_MSDC2_DAT1>,
+						 <PINMUX_GPIO202__FUNC_MSDC2_DAT2>,
+						 <PINMUX_GPIO203__FUNC_MSDC2_DAT3>;
+					drive-strength = <4>;
+				};
+			};
 		};
 
 		gic: interrupt-controller@10220000 {
@@ -324,6 +410,54 @@
 				clock-names = "ref";
 				#phy-cells = <1>;
 			};
+		};
+
+		mmc0: mmc@11230000 {
+			compatible = "mediatek,mt6735-mmc";
+			reg = <0 0x11230000 0 0x1000>;
+			interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_LOW>;
+			clocks = <&pericfg CLK_MSDC30_0>,
+				 <&topckgen MSDC50_0_SEL>;
+			clock-names = "source", "hclk";
+			resets = <&pericfg RST_MSDC0>;
+
+			pinctrl-names = "default", "state_uhs";
+			pinctrl-0 = <&mmc0_pins_default>;
+			pinctrl-1 = <&mmc0_pins_uhs>;
+
+			status = "disabled";
+		};
+
+		mmc1: mmc@11240000 {
+			compatible = "mediatek,mt6735-mmc";
+			reg = <0 0x11240000 0 0x1000>;
+			interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_LOW>;
+			clocks = <&pericfg CLK_MSDC30_1>,
+				 <&topckgen AXI_SEL>;
+			clock-names = "source", "hclk";
+			resets = <&pericfg RST_MSDC1>;
+
+			pinctrl-names = "default", "state_uhs";
+			pinctrl-0 = <&mmc1_pins_default>;
+			pinctrl-1 = <&mmc1_pins_uhs>;
+
+			status = "disabled";
+		};
+
+		mmc2: mmc@11250000 {
+			compatible = "mediatek,mt6735-mmc";
+			reg = <0 0x11250000 0 0x1000>;
+			interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_LOW>;
+			clocks = <&pericfg CLK_MSDC30_2>,
+				 <&topckgen AXI_SEL>;
+			clock-names = "source", "hclk";
+			resets = <&pericfg RST_MSDC2>;
+
+			pinctrl-names = "default", "state_uhs";
+			pinctrl-0 = <&mmc2_pins_default>;
+			pinctrl-1 = <&mmc2_pins_uhs>;
+
+			status = "disabled";
 		};
 	};
 };
