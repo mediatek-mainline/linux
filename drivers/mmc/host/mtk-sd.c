@@ -500,6 +500,19 @@ static const struct mtk_mmc_compatible mt2712_compat = {
 	.support_64g = true,
 };
 
+static const struct mtk_mmc_compatible mt6735_compat = {
+	.clk_div_bits = 8,
+	.recheck_sdio_irq = false,
+	.hs400_tune = false,
+	.pad_tune_reg = MSDC_PAD_TUNE0,
+	.async_fifo = false,
+	.data_tune = true,
+	.busy_check = false,
+	.stop_clk_fix = false,
+	.enhance_rx = false,
+	.support_64g = true,
+};
+
 static const struct mtk_mmc_compatible mt6779_compat = {
 	.clk_div_bits = 12,
 	.recheck_sdio_irq = false,
@@ -605,6 +618,7 @@ static const struct mtk_mmc_compatible mt8516_compat = {
 static const struct of_device_id msdc_of_ids[] = {
 	{ .compatible = "mediatek,mt2701-mmc", .data = &mt2701_compat},
 	{ .compatible = "mediatek,mt2712-mmc", .data = &mt2712_compat},
+	{ .compatible = "mediatek,mt6735-mmc", .data = &mt6735_compat},
 	{ .compatible = "mediatek,mt6779-mmc", .data = &mt6779_compat},
 	{ .compatible = "mediatek,mt6795-mmc", .data = &mt6795_compat},
 	{ .compatible = "mediatek,mt7620-mmc", .data = &mt7620_compat},
@@ -613,7 +627,6 @@ static const struct of_device_id msdc_of_ids[] = {
 	{ .compatible = "mediatek,mt8173-mmc", .data = &mt8173_compat},
 	{ .compatible = "mediatek,mt8183-mmc", .data = &mt8183_compat},
 	{ .compatible = "mediatek,mt8516-mmc", .data = &mt8516_compat},
-
 	{}
 };
 MODULE_DEVICE_TABLE(of, msdc_of_ids);
@@ -1716,10 +1729,10 @@ static void msdc_init_hw(struct msdc_host *host)
 		writel(0, host->base + tune_reg);
 	}
 	writel(0, host->base + MSDC_IOCON);
-	sdr_set_field(host->base + MSDC_IOCON, MSDC_IOCON_DDLSEL, 0);
+	sdr_set_field(host->base + MSDC_IOCON, MSDC_IOCON_DDLSEL, 1);
 	writel(0x403c0046, host->base + MSDC_PATCH_BIT);
 	sdr_set_field(host->base + MSDC_PATCH_BIT, MSDC_CKGEN_MSDC_DLY_SEL, 1);
-	writel(0xffff4089, host->base + MSDC_PATCH_BIT1);
+	writel(0xffff40c9, host->base + MSDC_PATCH_BIT1);
 	sdr_set_bits(host->base + EMMC50_CFG0, EMMC50_CFG_CFCSTS_SEL);
 
 	if (host->dev_comp->stop_clk_fix) {
