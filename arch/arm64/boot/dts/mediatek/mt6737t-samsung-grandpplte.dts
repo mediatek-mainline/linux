@@ -7,6 +7,7 @@
 
 #include "mt6735.dtsi"
 #include "mt6328.dtsi"
+#include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/input/input.h>
 
 / {
@@ -57,6 +58,20 @@
 			no-map;
 		};
 	};
+
+	vdd_tflash: regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "vdd_tflash";
+		regulator-min-microvolt = <3000000>;
+		regulator-max-microvolt = <3000000>;
+		regulator-allow-set-load;
+		startup-delay-us = <100>;
+		gpio = <&pio 19 0>;
+		enable-active-high;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&vdd_tflash_default>;
+	};
 };
 
 &mt6328_keys {
@@ -69,8 +84,58 @@
 	linux,keycodes = <KEY_VOLUMEDOWN>;
 };
 
+&pio {
+	vdd_tflash_default: vdd-tflash-default {
+		ce {
+			pinmux = <(MTK_PIN_NO(19) | 0)>;
+			slew-rate = <1>;
+		};
+	};
+};
+
 &pwrap {
 	status = "okay";
+};
+
+&mmc0 {
+	status = "okay";
+
+	vmmc-supply = <&mt6328_vemc33_reg>;
+	vqmmc-supply = <&mt6328_vio18_reg>;
+
+	bus-width = <8>;
+	max-frequency = <20000000>;
+	cap-mmc-highspeed;
+	mmc-ddr-1_8v;
+	mmc-hs200-1_8v;
+	/* TODO: Fix tuning issue in HS400 mode */
+	// mmc-hs400-1_8v;
+	non-removable;
+
+	mediatek,hs200-cmd-int-delay = <11>;
+	mediatek,hs400-cmd-int-delay = <6>;
+	mediatek,hs400-cmd-resp-sel-rising;
+	mediatek,hs400-ds-dly3 = <10>;
+	mediatek,latch-ck = <1>;
+};
+
+/* TODO: Fix microSD card slot. Possibly power issue. */
+&mmc1 {
+	status = "okay";
+
+	vmmc-supply = <&vdd_tflash>;
+	vqmmc-supply = <&vdd_tflash>;
+
+	bus-width = <4>;
+	max-frequency = <20000000>;
+	cap-sd-highspeed;
+	sd-uhs-sdr12;
+	sd-uhs-sdr25;
+	sd-uhs-sdr50;
+	sd-uhs-sdr104;
+	sd-uhs-ddr50;
+
+	cd-gpios = <&pio 5 GPIO_ACTIVE_LOW>;
 };
 
 /*
