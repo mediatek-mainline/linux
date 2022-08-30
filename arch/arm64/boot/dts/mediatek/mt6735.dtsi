@@ -11,7 +11,9 @@
 #include <dt-bindings/clock/mediatek,mt6735-pericfg.h>
 #include <dt-bindings/clock/mediatek,mt6735-topckgen.h>
 #include <dt-bindings/phy/phy.h>
+#include <dt-bindings/pinctrl/mt65xx.h>
 #include <dt-bindings/reset/mediatek,mt6735-infracfg.h>
+#include <dt-bindings/reset/mediatek,mt6735-pericfg.h>
 
 / {
 	compatible = "mediatek,mt6735";
@@ -220,6 +222,90 @@
 
 			interrupt-controller;
 			#interrupt-cells = <2>;
+
+			mmc0_pins_default: mmc0-default-pins {
+				pins-cmd-clk-dat-rst {
+					pinmux = <(MTK_PIN_NO(172) | 1)>,
+						 <(MTK_PIN_NO(173) | 1)>,
+						 <(MTK_PIN_NO(174) | 1)>,
+						 <(MTK_PIN_NO(175) | 1)>,
+						 <(MTK_PIN_NO(176) | 1)>,
+						 <(MTK_PIN_NO(177) | 1)>,
+						 <(MTK_PIN_NO(178) | 1)>,
+						 <(MTK_PIN_NO(179) | 1)>,
+						 <(MTK_PIN_NO(180) | 1)>,
+						 <(MTK_PIN_NO(181) | 1)>,
+						 <(MTK_PIN_NO(182) | 1)>,
+						 <(MTK_PIN_NO(183) | 1)>;
+					drive-strength = <2>;
+				};
+			};
+
+			mmc0_pins_uhs: mmc0-uhs-pins {
+				pins-cmd-clk-dat-rst {
+					pinmux = <(MTK_PIN_NO(172) | 1)>,
+						 <(MTK_PIN_NO(173) | 1)>,
+						 <(MTK_PIN_NO(174) | 1)>,
+						 <(MTK_PIN_NO(175) | 1)>,
+						 <(MTK_PIN_NO(176) | 1)>,
+						 <(MTK_PIN_NO(177) | 1)>,
+						 <(MTK_PIN_NO(178) | 1)>,
+						 <(MTK_PIN_NO(179) | 1)>,
+						 <(MTK_PIN_NO(180) | 1)>,
+						 <(MTK_PIN_NO(181) | 1)>,
+						 <(MTK_PIN_NO(182) | 1)>,
+						 <(MTK_PIN_NO(183) | 1)>;
+					drive-strength = <4>;
+				};
+			};
+
+			mmc1_pins_default: mmc1-default-pins {
+				pins-cmd-clk-dat {
+					pinmux = <(MTK_PIN_NO(166) | 1)>,
+						 <(MTK_PIN_NO(167) | 1)>,
+						 <(MTK_PIN_NO(168) | 1)>,
+						 <(MTK_PIN_NO(169) | 1)>,
+						 <(MTK_PIN_NO(170) | 1)>,
+						 <(MTK_PIN_NO(171) | 1)>;
+					drive-strength = <2>;
+				};
+			};
+
+			mmc1_pins_uhs: mmc1-uhs-pins {
+				pins-cmd-clk-dat {
+					pinmux = <(MTK_PIN_NO(166) | 1)>,
+						 <(MTK_PIN_NO(167) | 1)>,
+						 <(MTK_PIN_NO(168) | 1)>,
+						 <(MTK_PIN_NO(169) | 1)>,
+						 <(MTK_PIN_NO(170) | 1)>,
+						 <(MTK_PIN_NO(171) | 1)>;
+					drive-strength = <4>;
+				};
+			};
+
+			mmc2_pins_default: mmc2-default-pins {
+				pins-cmd-clk-dat {
+					pinmux = <(MTK_PIN_NO(198) | 1)>,
+						 <(MTK_PIN_NO(199) | 1)>,
+						 <(MTK_PIN_NO(200) | 1)>,
+						 <(MTK_PIN_NO(201) | 1)>,
+						 <(MTK_PIN_NO(202) | 1)>,
+						 <(MTK_PIN_NO(203) | 1)>;
+					drive-strength = <2>;
+				};
+			};
+
+			mmc2_pins_uhs: mmc2-uhs-pins {
+				pins-cmd-clk-dat {
+					pinmux = <(MTK_PIN_NO(198) | 1)>,
+						 <(MTK_PIN_NO(199) | 1)>,
+						 <(MTK_PIN_NO(200) | 1)>,
+						 <(MTK_PIN_NO(201) | 1)>,
+						 <(MTK_PIN_NO(202) | 1)>,
+						 <(MTK_PIN_NO(203) | 1)>;
+					drive-strength = <4>;
+				};
+			};
 		};
 
 		gic: interrupt-controller@10220000 {
@@ -324,6 +410,54 @@
 				clock-names = "ref";
 				#phy-cells = <1>;
 			};
+		};
+
+		mmc0: mmc@11230000 {
+			compatible = "mediatek,mt6735-mmc";
+			reg = <0 0x11230000 0 0x1000>;
+			interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_LOW>;
+			clocks = <&pericfg MSDC30_0>,
+				 <&topckgen MSDC50_0_SEL>;
+			clock-names = "source", "hclk";
+			resets = <&pericfg MSDC0_SW_RST>;
+
+			pinctrl-names = "default", "state_uhs";
+			pinctrl-0 = <&mmc0_pins_default>;
+			pinctrl-1 = <&mmc0_pins_uhs>;
+
+			status = "disabled";
+		};
+
+		mmc1: mmc@11240000 {
+			compatible = "mediatek,mt6735-mmc";
+			reg = <0 0x11240000 0 0x1000>;
+			interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_LOW>;
+			clocks = <&pericfg MSDC30_1>,
+				 <&topckgen AXI_SEL>;
+			clock-names = "source", "hclk";
+			resets = <&pericfg MSDC1_SW_RST>;
+
+			pinctrl-names = "default", "state_uhs";
+			pinctrl-0 = <&mmc1_pins_default>;
+			pinctrl-1 = <&mmc1_pins_uhs>;
+
+			status = "disabled";
+		};
+
+		mmc2: mmc@11250000 {
+			compatible = "mediatek,mt6735-mmc";
+			reg = <0 0x11250000 0 0x1000>;
+			interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_LOW>;
+			clocks = <&pericfg MSDC30_2>,
+				 <&topckgen AXI_SEL>;
+			clock-names = "source", "hclk";
+			resets = <&pericfg MSDC2_SW_RST>;
+
+			pinctrl-names = "default", "state_uhs";
+			pinctrl-0 = <&mmc2_pins_default>;
+			pinctrl-1 = <&mmc2_pins_uhs>;
+
+			status = "disabled";
 		};
 	};
 };
