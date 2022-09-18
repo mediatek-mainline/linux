@@ -45,6 +45,11 @@ properties:
           - const: mediatek,mt6592
       - items:
           - enum:
+              - samsung,grandpplte
+          - const: mediatek,mt6737t
+          - const: mediatek,mt6735
+      - items:
+          - enum:
               - mediatek,mt6755-evb
           - const: mediatek,mt6755
       - items:
