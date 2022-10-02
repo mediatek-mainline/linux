@@ -72,6 +72,35 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&vdd_tflash_default>;
 	};
+
+	/*
+	 * Until hardware I2C is supported, bit-banged I2C using the
+	 * I2C3 SDA/SCL pins as GPIOs can be used to communicate with
+	 * the touchscreen.
+	 */
+	 i2c-3 {
+		compatible = "i2c-gpio";
+
+		sda-gpios = <&pio 53 GPIO_ACTIVE_HIGH>;
+		scl-gpios = <&pio 54 GPIO_ACTIVE_HIGH>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		touchscreen@20 {
+			compatible = "zinitix,bt541";
+			reg = <0x20>;
+			interrupt-parent = <&pio>;
+			interrupts = <62 IRQ_TYPE_EDGE_FALLING>;
+
+			touchscreen-size-x = <539>;
+			touchscreen-size-y = <959>;
+		};
+	};
+};
+
+&mt6328_vgp1_reg {
+	regulator-always-on;
 };
 
 &mt6328_keys {
