@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0
 dtb-$(CONFIG_ARCH_MEDIATEK) += mt2712-evb.dtb
 dtb-$(CONFIG_ARCH_MEDIATEK) += mt6735-ps1150ml.dtb
+dtb-$(CONFIG_ARCH_MEDIATEK) += mt6735-t84bi4g.dtb
 dtb-$(CONFIG_ARCH_MEDIATEK) += mt6737t-samsung-grandpplte.dtb
 dtb-$(CONFIG_ARCH_MEDIATEK) += mt6755-evb.dtb
 dtb-$(CONFIG_ARCH_MEDIATEK) += mt6779-evb.dtb
