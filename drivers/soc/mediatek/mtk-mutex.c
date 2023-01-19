@@ -28,6 +28,17 @@
 
 #define INT_MUTEX				BIT(1)
 
+#define MT6735_MUTEX_MOD_DISP_OVL0		0
+#define MT6735_MUTEX_MOD_DISP_OVL1		1
+#define MT6735_MUTEX_MOD_DISP_RDMA0		2
+#define MT6735_MUTEX_MOD_DISP_RDMA1		3
+#define MT6735_MUTEX_MOD_DISP_WDMA0		4
+#define MT6735_MUTEX_MOD_DISP_COLOR0		5
+#define MT6735_MUTEX_MOD_DISP_CCORR		6
+#define MT6735_MUTEX_MOD_DISP_AAL0		7
+#define MT6735_MUTEX_MOD_DISP_GAMMA		8
+#define MT6735_MUTEX_MOD_DISP_DITHER0		9
+
 #define MT8186_MUTEX_MOD_DISP_OVL0		0
 #define MT8186_MUTEX_MOD_DISP_OVL0_2L		1
 #define MT8186_MUTEX_MOD_DISP_RDMA0		2
@@ -262,6 +273,19 @@ static const unsigned int mt2712_mutex_mod[DDP_COMPONENT_ID_MAX] = {
 	[DDP_COMPONENT_WDMA1] = MT2712_MUTEX_MOD_DISP_WDMA1,
 };
 
+static const unsigned int mt6735_mutex_mod[DDP_COMPONENT_ID_MAX] = {
+	[DDP_COMPONENT_OVL0] = MT6735_MUTEX_MOD_DISP_OVL0,
+	[DDP_COMPONENT_OVL1] = MT6735_MUTEX_MOD_DISP_OVL1,
+	[DDP_COMPONENT_RDMA0] = MT6735_MUTEX_MOD_DISP_RDMA0,
+	[DDP_COMPONENT_RDMA1] = MT6735_MUTEX_MOD_DISP_RDMA1,
+	[DDP_COMPONENT_WDMA0] = MT6735_MUTEX_MOD_DISP_WDMA0,
+	[DDP_COMPONENT_COLOR0] = MT6735_MUTEX_MOD_DISP_COLOR0,
+	[DDP_COMPONENT_CCORR] = MT6735_MUTEX_MOD_DISP_CCORR,
+	[DDP_COMPONENT_AAL0] = MT6735_MUTEX_MOD_DISP_AAL0,
+	[DDP_COMPONENT_GAMMA] = MT6735_MUTEX_MOD_DISP_GAMMA,
+	[DDP_COMPONENT_DITHER0] = MT6735_MUTEX_MOD_DISP_DITHER0,
+};
+
 static const unsigned int mt8167_mutex_mod[DDP_COMPONENT_ID_MAX] = {
 	[DDP_COMPONENT_AAL0] = MT8167_MUTEX_MOD_DISP_AAL,
 	[DDP_COMPONENT_CCORR] = MT8167_MUTEX_MOD_DISP_CCORR,
@@ -400,6 +424,13 @@ static const unsigned int mt2712_mutex_sof[DDP_MUTEX_SOF_MAX] = {
 	[MUTEX_SOF_DSI3] = MUTEX_SOF_DSI3,
 };
 
+static const unsigned int mt6735_mutex_sof[DDP_MUTEX_SOF_MAX] = {
+	[MUTEX_SOF_SINGLE_MODE] = MUTEX_SOF_SINGLE_MODE,
+	[MUTEX_SOF_DSI0] = MUTEX_SOF_DSI0,
+	[MUTEX_SOF_DSI1] = MUTEX_SOF_DSI1,
+	[MUTEX_SOF_DPI0] = MUTEX_SOF_DPI0,
+};
+
 static const unsigned int mt6795_mutex_sof[DDP_MUTEX_SOF_MAX] = {
 	[MUTEX_SOF_SINGLE_MODE] = MUTEX_SOF_SINGLE_MODE,
 	[MUTEX_SOF_DSI0] = MUTEX_SOF_DSI0,
@@ -457,6 +488,13 @@ static const struct mtk_mutex_data mt2701_mutex_driver_data = {
 static const struct mtk_mutex_data mt2712_mutex_driver_data = {
 	.mutex_mod = mt2712_mutex_mod,
 	.mutex_sof = mt2712_mutex_sof,
+	.mutex_mod_reg = MT2701_MUTEX0_MOD0,
+	.mutex_sof_reg = MT2701_MUTEX0_SOF0,
+};
+
+static const struct mtk_mutex_data mt6735_mutex_driver_data = {
+	.mutex_mod = mt6735_mutex_mod,
+	.mutex_sof = mt6735_mutex_sof,
 	.mutex_mod_reg = MT2701_MUTEX0_MOD0,
 	.mutex_sof_reg = MT2701_MUTEX0_SOF0,
 };
@@ -845,6 +883,8 @@ static const struct of_device_id mutex_driver_dt_match[] = {
 	  .data = &mt2701_mutex_driver_data},
 	{ .compatible = "mediatek,mt2712-disp-mutex",
 	  .data = &mt2712_mutex_driver_data},
+	{ .compatible = "mediatek,mt6735-disp-mutex",
+	  .data = &mt6735_mutex_driver_data},
 	{ .compatible = "mediatek,mt6795-disp-mutex",
 	  .data = &mt6795_mutex_driver_data},
 	{ .compatible = "mediatek,mt8167-disp-mutex",
