@@ -162,6 +162,7 @@
 
 enum mtk_iommu_plat {
 	M4U_MT2712,
+	M4U_MT6735,
 	M4U_MT6779,
 	M4U_MT6795,
 	M4U_MT8167,
@@ -1441,6 +1442,17 @@ static const struct mtk_iommu_plat_data mt2712_data = {
 	.larbid_remap = {{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}},
 };
 
+static const struct mtk_iommu_plat_data mt6735_data = {
+	.m4u_plat       = M4U_MT6735,
+	.flags          = HAS_BCLK | RESET_AXI | MTK_IOMMU_TYPE_MM,
+	.inv_sel_reg    = REG_MMU_INV_SEL_GEN1,
+	.banks_num      = 1,
+	.banks_enable   = {true},
+	.iova_region    = single_domain,
+	.iova_region_nr = ARRAY_SIZE(single_domain),
+	.larbid_remap   = {{0}, {1}, {2}, {3}},
+};
+
 static const struct mtk_iommu_plat_data mt6779_data = {
 	.m4u_plat      = M4U_MT6779,
 	.flags         = HAS_SUB_COMM_2BITS | OUT_ORDER_WR_EN | WR_THROT_EN |
@@ -1588,6 +1600,7 @@ static const struct mtk_iommu_plat_data mt8365_data = {
 
 static const struct of_device_id mtk_iommu_of_ids[] = {
 	{ .compatible = "mediatek,mt2712-m4u", .data = &mt2712_data},
+	{ .compatible = "mediatek,mt6735-m4u", .data = &mt6735_data},
 	{ .compatible = "mediatek,mt6779-m4u", .data = &mt6779_data},
 	{ .compatible = "mediatek,mt6795-m4u", .data = &mt6795_data},
 	{ .compatible = "mediatek,mt8167-m4u", .data = &mt8167_data},
