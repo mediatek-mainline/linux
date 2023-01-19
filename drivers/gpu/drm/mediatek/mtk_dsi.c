@@ -1039,10 +1039,8 @@ static ssize_t mtk_dsi_host_transfer(struct mipi_dsi_host *host,
 	if (ret)
 		goto restore_dsi_mode;
 
-	if (!MTK_DSI_HOST_IS_READ(msg->type)) {
-		recv_cnt = 0;
-		goto restore_dsi_mode;
-	}
+	if (!MTK_DSI_HOST_IS_READ(msg->type))
+		return 0;
 
 	if (!msg->rx_buf) {
 		DRM_ERROR("dsi receive buffer size may be NULL\n");
@@ -1072,13 +1070,15 @@ static ssize_t mtk_dsi_host_transfer(struct mipi_dsi_host *host,
 	DRM_INFO("dsi get %d byte data from the panel address(0x%x)\n",
 		 recv_cnt, *((u8 *)(msg->tx_buf)));
 
+	return recv_cnt;
+
 restore_dsi_mode:
 	if (dsi_mode & MODE) {
 		mtk_dsi_set_mode(dsi);
 		mtk_dsi_start(dsi);
 	}
 
-	return ret < 0 ? ret : recv_cnt;
+	return ret;
 }
 
 static const struct mipi_dsi_host_ops mtk_dsi_ops = {
