@@ -168,6 +168,15 @@
 			clock-names = "system-clk", "rtc-clk";
 		};
 
+		scpsys: power-controller@10006000 {
+			compatible = "mediatek,mt6735-scpsys";
+			reg = <0 0x10006000 0 0x1000>;
+
+			infracfg = <&infracfg>;
+
+			#power-domain-cells = <1>;
+		};
+
 		sysirq: intpol-controller@10200620 {
 			compatible = "mediatek,mt6735-sysirq",
 				"mediatek,mt6577-sysirq";
