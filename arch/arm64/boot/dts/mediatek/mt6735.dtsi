@@ -10,6 +10,7 @@
 #include <dt-bindings/clock/mediatek,mt6735-apmixedsys.h>
 #include <dt-bindings/clock/mediatek,mt6735-imgsys.h>
 #include <dt-bindings/clock/mediatek,mt6735-infracfg.h>
+#include <dt-bindings/clock/mediatek,mt6735-mfgsys.h>
 #include <dt-bindings/clock/mediatek,mt6735-mmsys.h>
 #include <dt-bindings/clock/mediatek,mt6735-pericfg.h>
 #include <dt-bindings/clock/mediatek,mt6735-topckgen.h>
@@ -20,6 +21,7 @@
 #include <dt-bindings/pinctrl/mediatek,mt6735-pinctrl.h>
 #include <dt-bindings/power/mediatek,mt6735-scpsys.h>
 #include <dt-bindings/reset/mediatek,mt6735-infracfg.h>
+#include <dt-bindings/reset/mediatek,mt6735-mfgsys.h>
 #include <dt-bindings/reset/mediatek,mt6735-mmsys.h>
 #include <dt-bindings/reset/mediatek,mt6735-pericfg.h>
 
@@ -514,6 +516,25 @@
 			reg = <0 0x13000000 0 0x1000>;
 			#clock-cells = <1>;
 			#reset-cells = <1>;
+		};
+		
+		gpu: gpu@13040000 {
+			compatible = "mediatek,mt6735-mali", "arm,mali-t720";
+			reg = <0 0x13040000 0 0x4000>;
+
+			interrupts = <GIC_SPI 212 IRQ_TYPE_LEVEL_LOW>,
+				     <GIC_SPI 211 IRQ_TYPE_LEVEL_LOW>,
+				     <GIC_SPI 210 IRQ_TYPE_LEVEL_LOW>;
+			interrupt-names = "job", "mmu", "gpu";
+
+			clocks = <&mfgsys CLK_BG3D>;
+
+			resets = <&mfgsys RST_AXI>,
+				 <&mfgsys RST_G3D>;
+
+			power-domains = <&scpsys MT6735_POWER_DOMAIN_MFG>;
+
+			status = "disabled";
 		};
 
 		mmsys: syscon@14000000 {
