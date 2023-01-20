@@ -72,6 +72,7 @@ properties:
       - enum:
           - mediatek,mt2701-m4u  # generation one
           - mediatek,mt2712-m4u  # generation two
+          - mediatek,mt6735-m4u  # generation two
           - mediatek,mt6779-m4u  # generation two
           - mediatek,mt6795-m4u  # generation two
           - mediatek,mt8167-m4u  # generation two
