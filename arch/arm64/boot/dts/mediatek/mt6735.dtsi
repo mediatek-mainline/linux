@@ -7,6 +7,7 @@
 
 #include <dt-bindings/interrupt-controller/irq.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/clock/mediatek,mt6735-apmixedsys.h>
 #include <dt-bindings/clock/mediatek,mt6735-imgsys.h>
 #include <dt-bindings/clock/mediatek,mt6735-infracfg.h>
 #include <dt-bindings/clock/mediatek,mt6735-mmsys.h>
@@ -19,6 +20,7 @@
 #include <dt-bindings/pinctrl/mediatek,mt6735-pinctrl.h>
 #include <dt-bindings/power/mediatek,mt6735-scpsys.h>
 #include <dt-bindings/reset/mediatek,mt6735-infracfg.h>
+#include <dt-bindings/reset/mediatek,mt6735-mmsys.h>
 #include <dt-bindings/reset/mediatek,mt6735-pericfg.h>
 
 / {
@@ -389,6 +391,23 @@
 			status = "disabled";
 		};
 
+		disp_pwm: pwm@1100e000 {
+			compatible = "mediatek,mt6735-disp-pwm";
+			reg = <0 0x1100e000 0 0x1000>;
+
+			interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_LOW>;
+
+			clocks = <&pericfg CLK_DISP_PWM>,
+				 <&topckgen DISPPWM_SEL>;
+			clock-names = "main", "mm";
+
+			power-domains = <&scpsys MT6735_POWER_DOMAIN_DIS>;
+
+			#pwm-cells = <2>;
+
+			status = "disabled";
+		};
+
 		usb2: usb@11200000 {
 			compatible = "mediatek,mt6735-musb", "mediatek,mtk-musb";
 			reg = <0 0x11200000 0 0x1000>;
@@ -497,6 +516,103 @@
 			#reset-cells = <1>;
 		};
 
+		ovl: ovl@14007000 {
+			compatible = "mediatek,mt6735-disp-ovl";
+			reg = <0 0x14007000 0 0x1000>;
+
+			interrupts = <GIC_SPI 193 IRQ_TYPE_LEVEL_LOW>;
+
+			clocks = <&mmsys CLK_DISP_OVL0>;
+
+			power-domains = <&scpsys MT6735_POWER_DOMAIN_DIS>;
+
+			iommus = <&m4u M4U_PORT_DISP_OVL0>;
+
+			status = "disabled";
+		};
+
+		disp_rdma0: dma-controller@14008000 {
+			compatible = "mediatek,mt6735-disp-rdma";
+			reg = <0 0x14008000 0 0x1000>;
+
+			interrupts = <GIC_SPI 194 IRQ_TYPE_LEVEL_LOW>;
+
+			clocks = <&mmsys CLK_DISP_RDMA0>;
+
+			power-domains = <&scpsys MT6735_POWER_DOMAIN_DIS>;
+
+			iommus = <&m4u M4U_PORT_DISP_RDMA0>;
+
+			status = "disabled";
+		};
+
+		color: color@1400b000 {
+			compatible = "mediatek,mt6735-disp-color";
+			reg = <0 0x1400b000 0 0x1000>;
+
+			interrupts = <GIC_SPI 197 IRQ_TYPE_LEVEL_LOW>;
+
+			clocks = <&mmsys CLK_DISP_COLOR>;
+
+			power-domains = <&scpsys MT6735_POWER_DOMAIN_DIS>;
+
+			status = "disabled";
+		};
+
+		dither: dither@1400f000 {
+			compatible = "mediatek,mt6735-disp-dither";
+			reg = <0 0x1400f000 0 0x1000>;
+
+			interrupts = <GIC_SPI 201 IRQ_TYPE_LEVEL_LOW>;
+
+			clocks = <&mmsys CLK_DISP_DITHER>;
+
+			power-domains = <&scpsys MT6735_POWER_DOMAIN_DIS>;
+
+			status = "disabled";
+		};
+
+		dsi: dsi@14011000 {
+			compatible = "mediatek,mt6735-dsi";
+			reg = <0 0x14011000 0 0x1000>;
+
+			interrupts = <GIC_SPI 203 IRQ_TYPE_LEVEL_LOW>;
+			
+			clocks = <&mmsys CLK_DSI_ENGINE>,
+				 <&mmsys CLK_DSI_DIGITAL>,
+				 <&mipi_tx>;
+			clock-names = "engine", "digital", "hs";
+
+			power-domains = <&scpsys MT6735_POWER_DOMAIN_DIS>;
+
+			resets = <&mmsys RST_DSI>;
+
+			phys = <&mipi_tx>;
+			phy-names = "dphy";
+
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			status = "disabled";
+
+			port {
+				dsi0_out: endpoint { };
+			};
+		};
+
+		disp_mutex: mutex@14014000 {
+			compatible = "mediatek,mt6735-disp-mutex";
+			reg = <0 0x14014000 0 0x1000>;
+
+			interrupts = <GIC_SPI 186 IRQ_TYPE_LEVEL_LOW>;
+
+			clocks = <&clk32k>;
+
+			power-domains = <&scpsys MT6735_POWER_DOMAIN_DIS>;
+
+			status = "disabled";
+		};
+
 		smi_larb0: memory-controller@14015000 {
 			compatible = "mediatek,mt6735-smi-larb";
 			reg = <0 0x14015000 0 0x1000>;
@@ -519,6 +635,22 @@
 			clock-names = "apb", "smi";
 
 			power-domains = <&scpsys MT6735_POWER_DOMAIN_DIS>;
+		};
+
+		mipi_tx: dsi-phy@14017000 {
+			compatible = "mediatek,mt6735-mipi-tx";
+			reg = <0 0x14017000 0 0x1000>;
+
+			clocks = <&apmixedsys TVDPLL>;
+
+			power-domains = <&scpsys MT6735_POWER_DOMAIN_DIS>;
+
+			#clock-cells = <0>;
+			clock-output-names = "dsi_mppll";
+
+			#phy-cells = <0>;
+
+			status = "disabled";
 		};
 
 		imgsys: syscon@15000000 {
