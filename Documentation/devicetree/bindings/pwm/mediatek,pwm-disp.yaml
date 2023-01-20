@@ -19,6 +19,7 @@ properties:
       - enum:
           - mediatek,mt2701-disp-pwm
           - mediatek,mt6595-disp-pwm
+          - mediatek,mt6735-disp-pwm
           - mediatek,mt8173-disp-pwm
           - mediatek,mt8183-disp-pwm
       - items:
