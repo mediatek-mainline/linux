@@ -11,6 +11,7 @@
 #include <dt-bindings/clock/mediatek,mt6735-pericfg.h>
 #include <dt-bindings/clock/mediatek,mt6735-topckgen.h>
 #include <dt-bindings/phy/phy.h>
+#include <dt-bindings/power/mt6735-power.h>
 #include <dt-bindings/pinctrl/mediatek,mt6735-pinctrl.h>
 #include <dt-bindings/reset/mediatek,mt6735-infracfg.h>
 #include <dt-bindings/reset/mediatek,mt6735-pericfg.h>
@@ -166,6 +167,57 @@
 			interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_LOW>;
 			clocks = <&system_clk>, <&clk32k>;
 			clock-names = "system-clk", "rtc-clk";
+		};
+
+		scpsys: syscon@10006000 {
+			compatible = "mediatek,mt6735-scpsys", "syscon", "simple-mfd";
+			reg = <0 0x10006000 0 0x1000>;
+
+			spm: power-controller {
+				compatible = "mediatek,mt6735-power-controller";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				#power-domain-cells = <1>;
+
+				power-domain@MT6735_POWER_DOMAIN_MD1 {
+					reg = <MT6735_POWER_DOMAIN_MD1>;
+					#power-domain-cells = <0>;
+					mediatek,infracfg = <&infracfg>;
+				};
+
+				power-domain@MT6735_POWER_DOMAIN_CONN {
+					reg = <MT6735_POWER_DOMAIN_CONN>;
+					#power-domain-cells = <0>;
+					mediatek,infracfg = <&infracfg>;
+				};
+
+				power-domain@MT6735_POWER_DOMAIN_DIS {
+					reg = <MT6735_POWER_DOMAIN_DIS>;
+					#power-domain-cells = <0>;
+					mediatek,infracfg = <&infracfg>;
+				};
+
+				power-domain@MT6735_POWER_DOMAIN_MFG {
+					reg = <MT6735_POWER_DOMAIN_MFG>;
+					#power-domain-cells = <0>;
+					mediatek,infracfg = <&infracfg>;
+				};
+
+				power-domain@MT6735_POWER_DOMAIN_ISP {
+					reg = <MT6735_POWER_DOMAIN_ISP>;
+					#power-domain-cells = <0>;
+				};
+
+				power-domain@MT6735_POWER_DOMAIN_VDE {
+					reg = <MT6735_POWER_DOMAIN_VDE>;
+					#power-domain-cells = <0>;
+				};
+
+				power-domain@MT6735_POWER_DOMAIN_VEN {
+					reg = <MT6735_POWER_DOMAIN_VEN>;
+					#power-domain-cells = <0>;
+				};
+			};
 		};
 
 		sysirq: intpol-controller@10200620 {
