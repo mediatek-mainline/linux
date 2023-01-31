@@ -149,6 +149,14 @@ config COMMON_CLK_MT6735_MMSYS
 	  This enables a driver for clocks provided by mmsys
 	  on the MediaTek MT6735 SoC.
 
+config COMMON_CLK_MT6735_VDECSYS
+	tristate "Clock driver for MediaTek MT6735 vdecsys"
+	depends on (ARCH_MEDIATEK && COMMON_CLK_MT6735) || COMPILE_TEST
+	select COMMON_CLK_MEDIATEK
+	help
+	  This enables a driver for clocks and resets provided
+	  by vdecsys on the MediaTek MT6735 SoC.
+
 config COMMON_CLK_MT6765
        bool "Clock driver for MediaTek MT6765"
        depends on (ARCH_MEDIATEK && ARM64) || COMPILE_TEST
