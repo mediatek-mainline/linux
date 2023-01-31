@@ -105,6 +105,38 @@
 		pinctrl-0 = <&vdd_tflash_default>;
 	};
 
+	i2c-sensors {
+		compatible = "i2c-gpio";
+
+		sda-gpios = <&pio 10 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+		scl-gpios = <&pio 11 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&i2c_sensors_default>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		accelerometer@18 {
+			compatible = "bosch,bma254";
+			reg = <0x18>;
+
+			vdd-supply = <&mt6328_vio18_reg>;
+			vddio-supply = <&mt6328_vio18_reg>;
+
+			interrupt-parent = <&pio>;
+			interrupts = <3 IRQ_TYPE_EDGE_RISING>;
+			interrupt-names = "INT1";
+
+			pinctrl-names = "default";
+			pinctrl-0 = <&accelerometer_default>;
+
+			mount-matrix = "0", "1", "0",
+				       "1", "0", "0",
+				       "0", "0", "1";
+		};
+	};
+
 	/*
 	 * Until hardware I2C is supported, bit-banged I2C using the
 	 * I2C3 SDA/SCL pins as GPIOs can be used to communicate with
@@ -213,6 +245,19 @@
 };
 
 &pio {
+	accelerometer_default: accelerometer-default-pins {
+		pins-int1 {
+			pinmux = <PINMUX_GPIO3__FUNC_GPIO3>;
+		};
+	};
+
+	i2c_sensors_default: i2c-sensors-default-pins {
+		pins-sda-scl {
+			pinmux = <PINMUX_GPIO10__FUNC_GPIO10>,
+				 <PINMUX_GPIO11__FUNC_GPIO11>;
+		};
+	};
+
 	backlight_default: backlight-default-pins {
 		pins-pwm {
 			pinmux = <PINMUX_GPIO69__FUNC_DISP_PWM>;
