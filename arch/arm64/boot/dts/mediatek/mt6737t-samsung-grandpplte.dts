@@ -34,6 +34,25 @@
 		reg = <0 0x40000000 0 0x5f530000>;
 	};
 
+	gpio-keys {
+		compatible = "gpio-keys";
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&gpio_keys_default>;
+
+		key-volume-up {
+			label = "Volume Up";
+			linux,code = <KEY_VOLUMEUP>;
+			gpios = <&pio 85 GPIO_ACTIVE_LOW>;
+		};
+
+		key-home {
+			label = "Home";
+			linux,code = <KEY_HOME>;
+			gpios = <&pio 86 GPIO_ACTIVE_LOW>;
+		};
+	};
+
 	backlight: pwm-backlight {
 		compatible = "pwm-backlight";
 
@@ -194,6 +213,16 @@
 
 		pins-en {
 			pinmux = <PINMUX_GPIO7__FUNC_GPIO7>;
+		};
+	};
+
+	gpio_keys_default: gpio-keys-default-pins {
+		pins-vol-down {
+			pinmux = <PINMUX_GPIO85__FUNC_GPIO85>;
+		};
+
+		pins-home {
+			pinmux = <PINMUX_GPIO86__FUNC_GPIO86>;
 		};
 	};
 
