@@ -13,6 +13,7 @@
 #include <linux/soc/mediatek/mtk-mmsys.h>
 
 #include "mtk-mmsys.h"
+#include "mt6735-mmsys.h"
 #include "mt8167-mmsys.h"
 #include "mt8183-mmsys.h"
 #include "mt8186-mmsys.h"
@@ -30,6 +31,14 @@ static const struct mtk_mmsys_driver_data mt2712_mmsys_driver_data = {
 	.clk_driver = "clk-mt2712-mm",
 	.routes = mmsys_default_routing_table,
 	.num_routes = ARRAY_SIZE(mmsys_default_routing_table),
+};
+
+static const struct mtk_mmsys_driver_data mt6735_mmsys_driver_data = {
+	.clk_driver = "clk-mt6735-mm",
+	.routes = mt6735_mmsys_routing_table,
+	.num_routes = ARRAY_SIZE(mt6735_mmsys_routing_table),
+	.sw0_rst_offset = MT6735_MMSYS_SW0_RST_B,
+	.lcm_rst_offset = MT6735_MMSYS_LCM_RST_B,
 };
 
 static const struct mtk_mmsys_driver_data mt6779_mmsys_driver_data = {
@@ -170,18 +179,20 @@ static int mtk_mmsys_reset_update(struct reset_controller_dev *rcdev, unsigned l
 {
 	struct mtk_mmsys *mmsys = container_of(rcdev, struct mtk_mmsys, rcdev);
 	unsigned long flags;
+	u16 offset = id < 32 ? mmsys->data->sw0_rst_offset
+			     : mmsys->data->lcm_rst_offset;
 	u32 reg;
 
 	spin_lock_irqsave(&mmsys->lock, flags);
 
-	reg = readl_relaxed(mmsys->regs + mmsys->data->sw0_rst_offset);
+	reg = readl_relaxed(mmsys->regs + offset);
 
 	if (assert)
-		reg &= ~BIT(id);
+		reg &= ~BIT(id % 32);
 	else
-		reg |= BIT(id);
+		reg |= BIT(id % 32);
 
-	writel_relaxed(reg, mmsys->regs + mmsys->data->sw0_rst_offset);
+	writel_relaxed(reg, mmsys->regs + offset);
 
 	spin_unlock_irqrestore(&mmsys->lock, flags);
 
@@ -274,6 +285,10 @@ static const struct of_device_id of_match_mtk_mmsys[] = {
 	{
 		.compatible = "mediatek,mt2712-mmsys",
 		.data = &mt2712_mmsys_driver_data,
+	},
+	{
+		.compatible = "mediatek,mt6735-mmsys",
+		.data = &mt6735_mmsys_driver_data,
 	},
 	{
 		.compatible = "mediatek,mt6779-mmsys",
