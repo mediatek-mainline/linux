@@ -479,5 +479,11 @@
 			#clock-cells = <1>;
 			#reset-cells = <1>;
 		};
+
+		vencsys: syscon@17000000 {
+			compatible = "mediatek,mt6735-vencsys", "syscon";
+			reg = <0 0x17000000 0 0x1000>;
+			#clock-cells = <1>;
+		};
 	};
 };
