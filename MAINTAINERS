@@ -13100,6 +13100,7 @@ L:	linux-clk@vger.kernel.org
 L:	linux-mediatek@lists.infradead.org (moderated for non-subscribers)
 S:	Maintained
 F:	drivers/clk/mediatek/clk-mt6735-apmixedsys.c
+F:	drivers/clk/mediatek/clk-mt6735-imgsys.c
 F:	drivers/clk/mediatek/clk-mt6735-infracfg.c
 F:	drivers/clk/mediatek/clk-mt6735-mmsys.c
 F:	drivers/clk/mediatek/clk-mt6735-pericfg.c
