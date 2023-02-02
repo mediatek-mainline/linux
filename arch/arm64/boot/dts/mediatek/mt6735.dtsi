@@ -342,6 +342,14 @@
 			};
 		};
 
+		toprgu: reset-controller@10212000 {
+			compatible = "mediatek,mt6735-wdt";
+			reg = <0 0x10212000 0 0x1000>;
+			interrupts = <GIC_SPI 128 IRQ_TYPE_LEVEL_LOW>;
+			timeout-sec = <10>;
+			#reset-cells = <1>;
+		};
+
 		gic: interrupt-controller@10220000 {
 			compatible = "arm,gic-400";
 			reg = <0 0x10221000 0 0x1000>,
